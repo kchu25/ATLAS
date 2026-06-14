@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MotifInference.jl — Discover sequence motifs and their interactions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+/* ── Design tokens ─────────────────────────────────────────── */
+:root {
+  --bg:        #0d0f14;
+  --bg2:       #12151c;
+  --bg3:       #1a1f2e;
+  --border:    rgba(255,255,255,0.08);
+  --text:      #e8eaf0;
+  --muted:     #8b90a0;
+  --accent:    #38bdf8;
+  --accent2:   #34d399;
+  --accent3:   #a78bfa;
+  --danger:    #f87171;
+  --max-w:     780px;
+  --wide-w:    1080px;
+  --nav-bg:    rgba(13,15,20,0.85);
+}
+body.light {
+  --bg:        #f8f9fc;
+  --bg2:       #ffffff;
+  --bg3:       #eef0f5;
+  --border:    rgba(0,0,0,0.10);
+  --text:      #1a1d27;
+  --muted:     #5a5f72;
+  --accent:    #0284c7;
+  --accent2:   #059669;
+  --accent3:   #7c3aed;
+  --danger:    #dc2626;
+  --nav-bg:    rgba(248,249,252,0.90);
+}
+
+.theme-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+  transition: border-color 0.2s;
+  color: var(--muted);
+}
+.theme-btn:hover { border-color: var(--accent); }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+img, svg { display: block; max-width: 100%; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+  background: var(--bg3);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+/* ── Scroll progress ───────────────────────────────────────── */
+#progress {
+  position: fixed; top: 0; left: 0; height: 2px; width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  z-index: 100; transition: width 0.1s linear;
+}
+
+/* ── Nav ───────────────────────────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 90;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 32px;
+  background: var(--nav-bg);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px; letter-spacing: 0.06em;
+  color: var(--accent); font-weight: 500;
+}
+.nav-links { display: flex; gap: 28px; }
+.nav-links a {
+  font-size: 13px; color: var(--muted); letter-spacing: 0.04em;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--text); text-decoration: none; }
+
+/* ── Hero ──────────────────────────────────────────────────── */
+#hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 120px 24px 80px;
+  position: relative; overflow: hidden;
+}
+.hero-glow {
+  position: absolute; top: 20%; left: 50%;
+  transform: translateX(-50%);
+  width: 600px; height: 300px;
+  background: radial-gradient(ellipse, rgba(56,189,248,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(56,189,248,0.1);
+  border: 1px solid rgba(56,189,248,0.25);
+  border-radius: 100px;
+  padding: 5px 14px;
+  font-size: 12px; font-family: 'JetBrains Mono', monospace;
+  color: var(--accent); letter-spacing: 0.06em;
+  margin-bottom: 32px;
+  animation: fadeUp 0.6s ease both;
+}
+.badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent2);
+  animation: pulse 2s ease infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.5; transform: scale(0.8); }
+}
+h1 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(2.4rem, 6vw, 4.0rem);
+  line-height: 1.14;
+  letter-spacing: -0.02em;
+  margin-bottom: 24px;
+  animation: fadeUp 0.6s 0.1s ease both;
+}
+h1 em { font-style: italic; color: var(--accent); }
+.hero-sub {
+  max-width: 600px;
+  color: var(--muted); font-size: 1.05rem;
+  margin: 0 auto 40px;
+  animation: fadeUp 0.6s 0.2s ease both;
+}
+.cta-row {
+  display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+  animation: fadeUp 0.6s 0.3s ease both;
+}
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 22px; border-radius: 8px;
+  font-size: 14px; font-weight: 500; letter-spacing: 0.02em;
+  transition: all 0.2s; cursor: pointer;
+}
+.btn-primary { background: var(--accent); color: #0d0f14; }
+.btn-primary:hover { background: #7dd3fc; text-decoration: none; }
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border); color: var(--text);
+}
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
+
+/* ── Sections ──────────────────────────────────────────────── */
+section { padding: 100px 24px; }
+.container { max-width: var(--max-w); margin: 0 auto; }
+.container-wide { max-width: var(--wide-w); margin: 0 auto; }
+
+.sec-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 14px;
+}
+h2 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(1.7rem, 3.5vw, 2.5rem);
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  margin-bottom: 20px;
+}
+h3 { font-family: 'Fraunces', Georgia, serif; font-weight: 500; font-size: 1.3rem; letter-spacing: -0.01em; margin-bottom: 12px; }
+p { color: var(--muted); margin-bottom: 16px; }
+p:last-child { margin-bottom: 0; }
+
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: 0 24px;
+}
+
+/* ── Abstract ─────────────────────────────────────────────── */
+#abstract { background: var(--bg); }
+.abstract-box {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 40px;
+  background: var(--bg2);
+  position: relative; overflow: hidden;
+}
+.abstract-box::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+}
+.abstract-box p { font-size: 1.05rem; line-height: 1.8; }
+
+/* ── Method ────────────────────────────────────────────────── */
+#method { background: var(--bg2); }
+.stage-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+  margin-top: 48px;
+}
+@media (max-width: 900px) { .stage-grid { grid-template-columns: 1fr; } }
+.stage-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.stage-card:hover { border-color: rgba(56,189,248,0.4); transform: translateY(-2px); }
+.stage-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--accent2);
+  letter-spacing: 0.12em; margin-bottom: 16px;
+}
+.stage-card h3 { font-size: 1.15rem; margin-bottom: 10px; }
+.stage-card p { font-size: 0.9rem; }
+
+/* Pipeline diagram */
+.arch-diagram {
+  margin-top: 48px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 32px;
+}
+.pipeline {
+  display: flex; align-items: center;
+  justify-content: center; flex-wrap: wrap;
+}
+.pipe-block {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 18px;
+  text-align: center;
+  min-width: 130px;
+}
+.pipe-block .label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--accent);
+  letter-spacing: 0.08em; margin-bottom: 4px;
+}
+.pipe-block .name { font-size: 13px; font-weight: 500; }
+.pipe-arrow { font-size: 18px; color: var(--muted); margin: 0 10px; }
+
+/* ── Features ──────────────────────────────────────────────── */
+#features { background: var(--bg); }
+.feat-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+  margin-top: 48px;
+}
+@media (max-width: 700px) { .feat-grid { grid-template-columns: 1fr; } }
+.feat-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px;
+  transition: border-color 0.2s;
+}
+.feat-card:hover { border-color: rgba(56,189,248,0.3); }
+.feat-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--accent2);
+  letter-spacing: 0.12em; margin-bottom: 16px;
+}
+.feat-card h3 { font-size: 1.1rem; margin-bottom: 10px; }
+.feat-card p { font-size: 0.88rem; }
+
+/* ── Code block ────────────────────────────────────────────── */
+#usage { background: var(--bg2); }
+.code-block {
+  background: #080a0f;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px 28px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px; line-height: 1.7;
+  overflow-x: auto;
+  margin: 0;
+  white-space: pre;
+  color: var(--text);
+}
+.code-block .kw  { color: #c792ea; }
+.code-block .fn  { color: #82aaff; }
+.code-block .str { color: #c3e88d; }
+.code-block .cm  { color: #546e7a; font-style: italic; }
+.code-block .num { color: #f78c6c; }
+.code-block .var { color: var(--accent); }
+.tabs { display: flex; gap: 4px; margin-bottom: -1px; flex-wrap: wrap; }
+.tab-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; padding: 6px 14px;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-bottom: none; border-radius: 7px 7px 0 0;
+  color: var(--muted); cursor: pointer; transition: all 0.2s;
+}
+.tab-btn.active { background: #080a0f; color: var(--text); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ── Options table ─────────────────────────────────────────── */
+#options { background: var(--bg); }
+.opt-table {
+  width: 100%; border-collapse: collapse; margin-top: 32px;
+  font-size: 14px;
+}
+.opt-table th, .opt-table td {
+  text-align: left; padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.opt-table th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--accent); font-weight: 500;
+}
+.opt-table td:first-child code { color: var(--accent2); background: transparent; padding: 0; }
+.opt-table td { color: var(--muted); }
+.opt-table tr:hover td { background: var(--bg2); }
+
+/* ── Citation ──────────────────────────────────────────────── */
+#citation { background: var(--bg2); }
+.cite-box {
+  background: #080a0f;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px 28px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px; line-height: 1.7;
+  position: relative; margin-top: 32px;
+  white-space: pre-wrap;
+  color: var(--text);
+}
+.copy-btn {
+  position: absolute; top: 14px; right: 14px;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 6px; padding: 5px 12px;
+  font-size: 12px; color: var(--muted);
+  cursor: pointer; transition: all 0.2s;
+}
+.copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── Footer ────────────────────────────────────────────────── */
+footer {
+  padding: 40px 24px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  font-size: 13px; color: var(--muted);
+}
+
+/* ── Animations ────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.reveal {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 768px) {
+  nav { padding: 12px 20px; }
+  .nav-links { display: none; }
+  .pipeline { flex-direction: column; }
+  .pipe-arrow { transform: rotate(90deg); margin: 6px 0; }
+  .abstract-box { padding: 24px; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<nav>
+  <span class="nav-logo">MotifInference<span style="color:var(--accent2)">.jl</span></span>
+  <div class="nav-links">
+    <a href="#abstract">Overview</a>
+    <a href="#method">Method</a>
+    <a href="#features">Features</a>
+    <a href="#usage">Usage</a>
+    <a href="#citation">Cite</a>
+  </div>
+  <button class="theme-btn" onclick="toggleTheme()" id="theme-btn" title="Toggle light/dark mode">🌙</button>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────────────── -->
+<section id="hero">
+  <div class="hero-glow"></div>
+  <div class="badge">Julia · Sequence-to-measurement modeling</div>
+
+  <h1>
+    Discover sequence motifs<br/>
+    <em>and the interactions between them</em>
+  </h1>
+
+  <p class="hero-sub">
+    MotifInference.jl learns a neural network that predicts a measured signal from
+    DNA, RNA, or protein sequence — then reads motifs back out of the trained model
+    via game-theoretic attribution, rather than off the raw weights.
+  </p>
+
+  <div class="cta-row">
+    <a class="btn btn-primary" href="#usage">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3l14 9-14 9V3z"/></svg>
+      Get Started
+    </a>
+    <a class="btn btn-outline" href="#method">How it works</a>
+    <a class="btn btn-outline" href="https://github.com/" target="_blank">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.419 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+      GitHub
+    </a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── Overview ─────────────────────────────────────────────── -->
+<section id="abstract">
+  <div class="container reveal">
+    <div class="sec-label">00 &mdash; Overview</div>
+    <h2>Motifs read out of the model, not the weights</h2>
+    <div class="abstract-box">
+      <p>
+        Many sequence analysis methods inspect a model's filters directly to find
+        motifs. MotifInference.jl takes a different route: it first trains a
+        sequence-to-measurement network to predict the experimental signal, then
+        quantifies how much each detected motif — and each <em>combination</em> of
+        motifs — contributes to the prediction using <strong>Banzhaf indices</strong>
+        from cooperative game theory. The result is a set of filtered singleton
+        motifs together with higher-order interaction terms, rendered as
+        self-contained HTML reports.
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── Method ────────────────────────────────────────────────── -->
+<section id="method">
+  <div class="container-wide">
+    <div class="container reveal">
+      <div class="sec-label">01 &mdash; Method</div>
+      <h2>A three-stage pipeline</h2>
+      <p>From raw sequence/label pairs to interpretable motif reports.</p>
+    </div>
+
+    <div class="arch-diagram reveal">
+      <div class="pipeline">
+        <div class="pipe-block"><div class="label">MODEL</div><div class="name">Seq → signal network</div></div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-block"><div class="label">ATTRIBUTE</div><div class="name">Banzhaf indices</div></div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-block"><div class="label">RENDER</div><div class="name">HTML motif reports</div></div>
+      </div>
+    </div>
+
+    <div class="stage-grid reveal">
+      <div class="stage-card">
+        <div class="stage-num">STAGE 01</div>
+        <h3>Model</h3>
+        <p>A base layer of <strong>learnable PWMs</strong> for primary motif detection,
+        hierarchical convolutional layers, and an <strong>EfficientNet-style backbone</strong>
+        of MBConv blocks with squeeze-and-excitation, ending in a linear output head.
+        Architecture hyperparameters are tuned automatically when no <code>seed</code> is given.</p>
+      </div>
+      <div class="stage-card">
+        <div class="stage-num">STAGE 02</div>
+        <h3>Motif attribution</h3>
+        <p>The contribution of each detected motif and of multi-motif
+        <em>combinations</em> is quantified with <strong>Banzhaf indices</strong> via
+        <code>BanzhafInference</code>. Significance is assessed against random-coalition
+        backgrounds, yielding filtered singletons and higher-order interaction terms.</p>
+      </div>
+      <div class="stage-card">
+        <div class="stage-num">STAGE 03</div>
+        <h3>Rendering</h3>
+        <p>Results are written as <strong>HTML motif reports</strong> — sequence logos,
+        contribution tables, and interaction summaries — via <code>GlyphEctoplasm</code>,
+        under <code>save_root/&lt;dataset&gt;/</code>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── Features ──────────────────────────────────────────────── -->
+<section id="features">
+  <div class="container-wide">
+    <div class="container reveal">
+      <div class="sec-label">02 &mdash; Features</div>
+      <h2>Flexible inputs, automatic tuning</h2>
+    </div>
+    <div class="feat-grid reveal">
+      <div class="feat-card">
+        <div class="feat-num">01</div>
+        <h3>DNA · RNA · Protein</h3>
+        <p>Works across nucleotide and amino-acid alphabets. Set <code>seq_type</code> to
+        <code>:dna</code>, <code>:rna</code>, or <code>:protein</code> — with a mutation model
+        for protein mutagenesis.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-num">02</div>
+        <h3>No file required</h3>
+        <p>Feed a <code>.jld2</code> dataset, a small CSV of <code>sequence,label</code>, or
+        in-memory strings and labels. All paths construct the same dataset and run the
+        same pipeline.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-num">03</div>
+        <h3>Interaction terms</h3>
+        <p>Beyond single motifs, it scores combinations of sizes <code>[2,3,4,5]</code>
+        to surface higher-order motif interactions.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-num">04</div>
+        <h3>Automatic tuning</h3>
+        <p>Omit <code>seed</code> and architecture hyperparameters are sampled and tuned
+        for you; supply one for a fully reproducible run.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── Usage ─────────────────────────────────────────────────── -->
+<section id="usage">
+  <div class="container-wide">
+    <div class="container reveal">
+      <div class="sec-label">03 &mdash; Usage</div>
+      <h2>One entry point: <code>run_method</code></h2>
+      <p>It runs the full pipeline — load → optional tune → train → attribute → render.
+      A CUDA-capable GPU is required for training.</p>
+    </div>
+
+    <div class="reveal" style="margin-top:40px;">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(event,'install')">Install</button>
+        <button class="tab-btn" onclick="switchTab(event,'file')">From a file</button>
+        <button class="tab-btn" onclick="switchTab(event,'mem')">In-memory / CSV</button>
+        <button class="tab-btn" onclick="switchTab(event,'batch')">Config &amp; batch</button>
+      </div>
+
+      <div id="tab-install" class="tab-panel active">
+<pre class="code-block"><span class="kw">using</span> Pkg
+Pkg.<span class="fn">activate</span>(<span class="str">"."</span>)
+Pkg.<span class="fn">instantiate</span>()
+
+<span class="cm"># Depends on unregistered packages referenced by local path in Project.toml:</span>
+<span class="cm">#   BanzhafInference, GlyphEctoplasm,</span>
+<span class="cm">#   AutoComputationalGraphTuning, SEQ2EXPdata</span>
+<span class="cm"># These must exist at the expected paths before instantiating.</span></pre>
+      </div>
+
+      <div id="tab-file" class="tab-panel">
+<pre class="code-block"><span class="kw">using</span> MotifInference
+
+<span class="cm"># Simplest — point at a .jld2 dataset. With no seed, hyperparameters are tuned.</span>
+<span class="fn">run_method</span>(<span class="str">"/path/to/mydata.jld2"</span>)
+
+<span class="cm"># With overrides</span>
+<span class="fn">run_method</span>(<span class="str">"/path/to/mydata.jld2"</span>; seq_type=<span class="str">:rna</span>, seed=<span class="num">42</span>)
+
+<span class="cm"># Multi-output data — process only a subset of targets</span>
+<span class="fn">run_method</span>(<span class="str">"/path/to/mydata.jld2"</span>; seq_type=<span class="str">:rna</span>, seed=<span class="num">42</span>, output_indices=<span class="num">1</span>:<span class="num">5</span>)</pre>
+      </div>
+
+      <div id="tab-mem" class="tab-panel">
+<pre class="code-block"><span class="kw">using</span> MotifInference
+
+strings = [<span class="str">"ACGTACGT"</span>, <span class="str">"TTGGCCAA"</span>, <span class="str">"GGGGCCCC"</span>, <span class="str">"AAAATTTT"</span>]
+labels  = [<span class="num">1.0</span>, <span class="num">2.0</span>, <span class="num">3.0</span>, <span class="num">4.0</span>]   <span class="cm"># one scalar per sequence</span>
+
+<span class="cm"># nucleotides</span>
+<span class="fn">run_method</span>(strings, labels)
+<span class="fn">run_method</span>(strings, labels; seq_type=<span class="str">:rna</span>, seed=<span class="num">42</span>)
+
+<span class="cm"># amino acids for mutagenesis</span>
+<span class="fn">run_method</span>(aa_strings, aa_labels; seq_type=<span class="str">:protein</span>, type=<span class="str">:mut</span>, GET_CONSENSUS=<span class="kw">true</span>)
+
+<span class="cm"># Or a CSV of  sequence,label  (header auto-detected, blank lines ignored)</span>
+<span class="fn">run_method</span>(<span class="str">"/path/to/mydata.csv"</span>; seq_type=<span class="str">:rna</span>, seed=<span class="num">42</span>)</pre>
+      </div>
+
+      <div id="tab-batch" class="tab-panel">
+<pre class="code-block"><span class="kw">using</span> MotifInference
+
+<span class="cm"># Build a run configuration explicitly to inspect or reuse it</span>
+trc = <span class="fn">make_trc</span>(<span class="str">"/path/to/mydata.jld2"</span>; seq_type=<span class="str">:dna</span>, seed=<span class="num">42</span>, motif_sizes=[<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>])
+<span class="fn">run_method</span>(trc)
+
+<span class="cm"># Batch over several registered datasets</span>
+<span class="fn">run_all</span>(<span class="fn">load_datasets</span>(<span class="str">"ecoli"</span>, <span class="str">"yeast"</span>))
+<span class="fn">run_all</span>(<span class="fn">load_datasets</span>())   <span class="cm"># everything</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── Options ───────────────────────────────────────────────── -->
+<section id="options">
+  <div class="container reveal">
+    <div class="sec-label">04 &mdash; Key options</div>
+    <h2>Passed through <code>make_trc</code> / <code>run_method</code></h2>
+    <table class="opt-table">
+      <thead><tr><th>Option</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>seq_type</code></td><td><code>:dna</code></td><td><code>:dna</code>, <code>:rna</code>, or <code>:protein</code></td></tr>
+        <tr><td><code>seed</code></td><td><code>nothing</code></td><td>RNG seed; <code>nothing</code> triggers hyperparameter tuning</td></tr>
+        <tr><td><code>motif_sizes</code></td><td><code>[2,3,4,5]</code></td><td>combination sizes scored for multi-motif interactions</td></tr>
+        <tr><td><code>normalization_method</code></td><td><code>:zscore</code></td><td>label normalization (<code>:identity</code>, <code>:zscore</code>, <code>:log</code>, …)</td></tr>
+        <tr><td><code>activation_thresh</code></td><td><code>0.9</code></td><td>percentile threshold for calling a motif "active"</td></tr>
+        <tr><td><code>multioutput</code></td><td><code>false</code></td><td>multi-output model variant</td></tr>
+        <tr><td><code>output_indices</code></td><td>all</td><td>which output targets to process</td></tr>
+        <tr><td><code>save_root</code></td><td><code>"."</code></td><td>where the per-dataset results folder is created</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── Citation ──────────────────────────────────────────────── -->
+<section id="citation">
+  <div class="container reveal">
+    <div class="sec-label">05 &mdash; Citation</div>
+    <h2>Cite MotifInference.jl</h2>
+    <div class="cite-box" id="cite-text">@software{motifinference_jl,
+  title  = {MotifInference.jl: Discovering sequence motifs and their
+            interactions from sequence-to-measurement data},
+  author = {TODO},
+  year   = {2026},
+  url    = {https://github.com/}
+}<button class="copy-btn" onclick="copyCite()">Copy</button></div>
+  </div>
+</section>
+
+<footer>
+  MotifInference.jl &nbsp;·&nbsp; Built in Julia &nbsp;·&nbsp; Requires a CUDA-capable GPU for training
+</footer>
+
+<script>
+/* ── Theme ─────────────────────────────────────────────────── */
+function toggleTheme() {
+  document.body.classList.toggle('light');
+  const light = document.body.classList.contains('light');
+  document.getElementById('theme-btn').textContent = light ? '☀️' : '🌙';
+  try { localStorage.setItem('mi-theme', light ? 'light' : 'dark'); } catch(e) {}
+}
+(function () {
+  try {
+    if (localStorage.getItem('mi-theme') === 'light') {
+      document.body.classList.add('light');
+      document.getElementById('theme-btn').textContent = '☀️';
+    }
+  } catch(e) {}
+})();
+
+/* ── Tabs ──────────────────────────────────────────────────── */
+function switchTab(e, id) {
+  document.querySelectorAll('#usage .tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#usage .tab-panel').forEach(p => p.classList.remove('active'));
+  e.currentTarget.classList.add('active');
+  document.getElementById('tab-' + id).classList.add('active');
+}
+
+/* ── Copy citation ─────────────────────────────────────────── */
+function copyCite() {
+  const txt = document.getElementById('cite-text').innerText.replace(/Copy$/, '').trim();
+  navigator.clipboard.writeText(txt);
+  const btn = document.querySelector('.copy-btn');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+}
+
+/* ── Scroll progress ───────────────────────────────────────── */
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+  document.getElementById('progress').style.width = pct + '%';
+});
+
+/* ── Reveal on scroll ──────────────────────────────────────── */
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(en => { if (en.isIntersecting) en.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
