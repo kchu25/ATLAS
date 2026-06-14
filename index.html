@@ -391,7 +391,7 @@ footer {
 }
 </style>
 </head>
-<body>
+<body class="light">
 
 <div id="progress"></div>
 
@@ -404,7 +404,7 @@ footer {
     <a href="#usage">Usage</a>
     <a href="#citation">Cite</a>
   </div>
-  <button class="theme-btn" onclick="toggleTheme()" id="theme-btn" title="Toggle light/dark mode">🌙</button>
+  <button class="theme-btn" onclick="toggleTheme()" id="theme-btn" title="Toggle light/dark mode">☀️</button>
 </nav>
 
 <!-- ── Hero ─────────────────────────────────────────────────── -->
@@ -413,8 +413,8 @@ footer {
   <div class="badge">Julia · Sequence-to-measurement modeling</div>
 
   <h1>
-    Discover sequence motifs<br/>
-    <em>and the interactions between them</em>
+    Discover motif combinations<br/>
+    <em>at the tails of the measured signal</em>
   </h1>
 
   <p class="hero-sub">
@@ -465,7 +465,7 @@ footer {
   <div class="container-wide">
     <div class="container reveal">
       <div class="sec-label">01 &mdash; Method</div>
-      <h2>A three-stage pipeline</h2>
+      <h2>A three-stage method</h2>
       <p>From raw sequence/label pairs to interpretable motif reports.</p>
     </div>
 
@@ -473,7 +473,7 @@ footer {
       <div class="pipeline">
         <div class="pipe-block"><div class="label">MODEL</div><div class="name">Seq → signal network</div></div>
         <div class="pipe-arrow">→</div>
-        <div class="pipe-block"><div class="label">ATTRIBUTE</div><div class="name">Banzhaf indices</div></div>
+        <div class="pipe-block"><div class="label">ATTRIBUTE</div><div class="name">Shapley values</div></div>
         <div class="pipe-arrow">→</div>
         <div class="pipe-block"><div class="label">RENDER</div><div class="name">HTML motif reports</div></div>
       </div>
@@ -677,9 +677,9 @@ function toggleTheme() {
 }
 (function () {
   try {
-    if (localStorage.getItem('mi-theme') === 'light') {
-      document.body.classList.add('light');
-      document.getElementById('theme-btn').textContent = '☀️';
+    if (localStorage.getItem('mi-theme') === 'dark') {
+      document.body.classList.remove('light');
+      document.getElementById('theme-btn').textContent = '🌙';
     }
   } catch(e) {}
 })();
