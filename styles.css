@@ -200,70 +200,90 @@ p:last-child { margin-bottom: 0; }
 
 /* ── Abstract ─────────────────────────────────────────────── */
 #abstract { background: var(--bg); }
-.abstract-box {
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 40px;
-  background: var(--bg2);
-  position: relative; overflow: hidden;
+.overview-title {
+  font-size: clamp(1.8rem, 3.6vw, 2.6rem);
 }
-.abstract-box::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, var(--accent), var(--accent2));
+.overview-grid {
+  display: grid;
+  grid-template-columns: 1.9fr 1fr;
+  gap: 48px;
+  align-items: center;
+  margin-top: 36px;
 }
-.abstract-box p { font-size: 1.05rem; line-height: 1.8; }
+@media (max-width: 860px) {
+  .overview-grid { grid-template-columns: 1fr; gap: 32px; }
+}
 
-/* ── Method ────────────────────────────────────────────────── */
+/* left — data pairs */
+.overview-data {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(11px, 1.05vw, 13.5px);
+  overflow-x: auto;
+}
+.data-head {
+  display: flex; justify-content: space-between;
+  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--muted); padding-bottom: 10px;
+  border-bottom: 1px solid var(--border); margin-bottom: 6px;
+}
+.data-row {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 18px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+}
+.data-row code {
+  background: none; padding: 0;
+  color: var(--muted); letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.data-row code b { color: var(--text); font-weight: 500; }
+.data-row .val { color: var(--muted); }
+.data-row .val.hi { color: var(--accent2); font-weight: 500; }
+
+/* right — plain wording */
+.overview-text p { font-size: 1.05rem; line-height: 1.75; }
+.overview-text .hl { color: var(--accent); }
+
+/* ── Input (CSV figure) ────────────────────────────────────── */
 #method { background: var(--bg2); }
-.stage-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
-  margin-top: 48px;
-}
-@media (max-width: 900px) { .stage-grid { grid-template-columns: 1fr; } }
-.stage-card {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 28px;
-  transition: border-color 0.2s, transform 0.2s;
-}
-.stage-card:hover { border-color: rgba(56,189,248,0.4); transform: translateY(-2px); }
-.stage-num {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px; color: var(--accent2);
-  letter-spacing: 0.12em; margin-bottom: 16px;
-}
-.stage-card h3 { font-size: 1.15rem; margin-bottom: 10px; }
-.stage-card p { font-size: 0.9rem; }
+.hl-seq { color: var(--text); font-weight: 500; }
+.hl-exp { color: var(--accent2); font-weight: 500; }
 
-/* Pipeline diagram */
-.arch-diagram {
-  margin-top: 48px;
+.csv-fig { max-width: 600px; margin: 44px auto 0; }
+.csv-bar {
+  display: flex; align-items: center; gap: 7px;
+  padding: 11px 16px;
   background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 32px;
+  border: 1px solid var(--border); border-bottom: none;
+  border-radius: 12px 12px 0 0;
 }
-.pipeline {
-  display: flex; align-items: center;
-  justify-content: center; flex-wrap: wrap;
-}
-.pipe-block {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px 18px;
-  text-align: center;
-  min-width: 130px;
-}
-.pipe-block .label {
+.csv-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); }
+.csv-name {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11px; color: var(--accent);
-  letter-spacing: 0.08em; margin-bottom: 4px;
+  font-size: 12px; color: var(--muted); margin-left: 8px;
 }
-.pipe-block .name { font-size: 13px; font-weight: 500; }
-.pipe-arrow { font-size: 18px; color: var(--muted); margin: 0 10px; }
+.csv-body {
+  border: 1px solid var(--border);
+  border-radius: 0 0 12px 12px;
+  background: var(--bg);
+  padding: 20px 22px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13.5px; line-height: 2.05;
+  overflow-x: auto;
+}
+.csv-line { white-space: nowrap; }
+.c-seq { color: var(--muted); letter-spacing: 0.04em; }
+.c-comma { color: var(--accent); font-weight: 700; padding: 0 3px; }
+.c-exp { color: var(--accent2); font-weight: 600; }
+.csv-cap {
+  display: flex; gap: 28px; justify-content: center; flex-wrap: wrap;
+  margin-top: 20px; font-size: 13px; color: var(--muted);
+}
+.cap-item { display: inline-flex; align-items: center; gap: 8px; }
+.sw { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.sw-seq { background: var(--muted); }
+.sw-exp { background: var(--accent2); }
 
 /* ── Features ──────────────────────────────────────────────── */
 #features { background: var(--bg); }
@@ -383,7 +403,4 @@ footer {
 @media (max-width: 768px) {
   nav { padding: 12px 20px; }
   .nav-links { display: none; }
-  .pipeline { flex-direction: column; }
-  .pipe-arrow { transform: rotate(90deg); margin: 6px 0; }
-  .abstract-box { padding: 24px; }
 }

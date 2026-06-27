@@ -17,7 +17,7 @@
   <a href="#hero" class="nav-logo">ATL<span style="color:var(--accent2)">AS</span></a>
   <div class="nav-links">
     <a href="#abstract">Overview</a>
-    <a href="#method">Method</a>
+    <a href="#method">Input</a>
     <a href="#features">Features</a>
     <a href="#usage">Usage</a>
     <a href="#citation">Cite</a>
@@ -27,8 +27,8 @@
 
 <!-- ── Hero ─────────────────────────────────────────────────── -->
 <section id="hero">
-  <div class="hero-glow"></div>
-  <div class="badge">Sequence-to-measurement modeling</div>
+  <!-- <div class="hero-glow"></div> -->
+  <div class="badge">Sequence-to-expression modeling</div>
 
   <h1>
     Discover motif combinations<br/>
@@ -36,7 +36,7 @@
   </h1>
 
   <p class="hero-sub">
-    <strong>ATLAS</strong> — <em>Attribution Testing with Learned Attributions and Sketching</em>
+    <strong>ATLAS</strong> — <em>Attribution Testing with Learned Attributions and Sketching</em> 
   </p>
 
   <div class="cta-row">
@@ -56,71 +56,64 @@
 
 <!-- ── Overview ─────────────────────────────────────────────── -->
 <section id="abstract">
-  <div class="container reveal">
+  <div class="container-wide reveal">
     <div class="sec-label">00 &mdash; Overview</div>
-    <h2>Motifs read out of the model, not the weights</h2>
-    <div class="abstract-box">
-      <p>
-        Many sequence analysis methods inspect a model's filters directly to find
-        motifs. ATLAS takes a different route: it first trains a
-        sequence-to-measurement network to predict the experimental signal, then
-        quantifies how much each detected motif — and each <em>combination</em> of
-        motifs — contributes to the prediction using <strong>Banzhaf indices</strong>
-        from cooperative game theory. The result is a set of filtered singleton
-        motifs together with higher-order motif combinations, rendered as
-        self-contained HTML reports.
-      </p>
+    <h2 class="overview-title">From sequences and signals to the patterns behind them</h2>
+    <div class="overview-grid">
+      <div class="overview-data">
+        <div class="data-head"><span>Sequence</span><span>Signal</span></div>
+        <div class="data-row"><code>CATGCAATTC<b class="m4">TTGCGCAA</b>AAAACCATGT<b class="m4">TTGCGCAA</b>CCGTAATGTA<b class="m4">TTGCGCAA</b>GGCGAAATA<b class="m5">CCAATCAG</b>GTAAACCAT</code><span class="val hi">8.4</span></div>
+        <div class="data-row"><code>ACGGAGGATACCAAATTCCTCC<b class="m4">TTGCGCAA</b>TTATTCAGGACCTAACCTGAG<b class="m4">TTGCGCAA</b>GTAAACCAGGTCTCTCCGCCC</code><span class="val">1.2</span></div>
+        <div class="data-row"><code>AAAGCTGT<b class="m2">CACGTG</b>TGCACCTA<b class="m4">TTGCGCAA</b>GCCAAGT<b class="m5">CCAATCAG</b>TCAACGG<b class="m2">CACGTG</b>CAGCTGC<b class="m4">TTGCGCAA</b>AATGGAA</code><span class="val hi">9.1</span></div>
+        <div class="data-row"><code>GCAATGACGGATATA<b class="m4">TTGCGCAA</b>TATTAAAAAGTGTTT<b class="m1">GATAA</b>TAAGATACATTGAGG<b class="m5">CCAATCAG</b>CCCGTTCGTGCTCC</code><span class="val">0.6</span></div>
+        <div class="data-row"><code>TGAAGCATTG<b class="m3">TGACGTCA</b>CTTTGTGAAG<b class="m5">CCAATCAG</b>AGGGACTTCA<b class="m4">TTGCGCAA</b>GCCAATAGAC<b class="m2">CACGTG</b>CTGCATACCG</code><span class="val hi">7.9</span></div>
+        <div class="data-row"><code>TCATTCTTCATGTGCAACCTAG<b class="m5">CCAATCAG</b>GGAGAATGTGTACATACGCTC<b class="m3">TGACGTCA</b>TTACTGCGGTCGCGTCTAATA</code><span class="val">2.0</span></div>
+        <div class="data-row"><code>CATTTGCT<b class="m5">CCAATCAG</b>TCGTTGA<b class="m4">TTGCGCAA</b>CTAGCAA<b class="m1">GATAA</b>CCCAGGG<b class="m5">CCAATCAG</b>CTATAGC<b class="m5">CCAATCAG</b>TATTCCC</code><span class="val hi">8.8</span></div>
+        <div class="data-row"><code>CGCGGCCCACCCAGT<b class="m2">CACGTG</b>ATTCCTAACGGAGCA<b class="m5">CCAATCAG</b>TAAATCCCACCCGA<b class="m5">CCAATCAG</b>ACTAAGTTTGTCGA</code><span class="val">1.5</span></div>
+        <div class="data-row"><code>TTGGTCCAAGATCGGGACTCGGT<b class="m2">CACGTG</b>CTCCAGGTAAGACGGGCTCATTC<b class="m1">GATAA</b>ATAAACGTTACTAAGGGGTATAA</code><span class="val hi">9.4</span></div>
+        <div class="data-row"><code>TTTGTGGGTG<b class="m4">TTGCGCAA</b>GGAACACTTA<b class="m4">TTGCGCAA</b>GTAGACTTGC<b class="m4">TTGCGCAA</b>AATCCAATTA<b class="m2">CACGTG</b>CAGCAGTCTT</code><span class="val">0.4</span></div>
+        <div class="data-row"><code>GCGCCTAGGGGCGC<b class="m5">CCAATCAG</b>CCCAAAGGTAAACG<b class="m3">TGACGTCA</b>AACCGTTGCGGTCA<b class="m5">CCAATCAG</b>ATCTTGTCGCGGCT</code><span class="val hi">7.6</span></div>
+        <div class="data-row"><code>TGAATTTGAAGCAGTGGCCGGG<b class="m5">CCAATCAG</b>AGTGTGTGCTCAGGAGTTCGT<b class="m3">TGACGTCA</b>CCCATGACACGATAGAGAGAG</code><span class="val">1.8</span></div>
+      </div>
+      <div class="overview-text">
+        <p>You bring <strong>(sequence, value)</strong> pairs — DNA or RNA with a
+        measured signal.</p>
+        <p>ATLAS finds which motifs must <span class="hl">co-occur</span> to drive the
+        signal — the <strong>combinations</strong> of patterns that matter together,
+        not in isolation.</p>
+      </div>
     </div>
   </div>
 </section>
 
 <div class="divider"></div>
 
-<!-- ── Method ────────────────────────────────────────────────── -->
+<!-- ── Input ─────────────────────────────────────────────────── -->
 <section id="method">
-  <div class="container-wide">
-    <div class="container reveal">
-      <div class="sec-label">01 &mdash; Method</div>
-      <h2>Three composable components</h2>
-      <p>A learned predictor, a game-theoretic motif attributor, and a renderer —
-      each a standalone package, swappable on its own.</p>
-    </div>
+  <div class="container reveal">
+    <div class="sec-label">01 &mdash; Input</div>
+    <h2>A CSV is all you need</h2>
+    <p>Two comma-separated columns: the <span class="hl-seq">sequence</span> and its
+    measured <span class="hl-exp">expression</span> value. That's the whole input format.</p>
 
-    <div class="arch-diagram reveal">
-      <div class="pipeline">
-        <div class="pipe-block"><div class="label">MODEL</div><div class="name">Seq → signal network</div></div>
-        <div class="pipe-arrow">→</div>
-        <div class="pipe-block"><div class="label">ATTRIBUTE</div><div class="name">Shapley values</div></div>
-        <div class="pipe-arrow">→</div>
-        <div class="pipe-block"><div class="label">RENDER</div><div class="name">HTML motif reports</div></div>
+    <figure class="csv-fig reveal">
+      <div class="csv-bar">
+        <span class="csv-dot"></span><span class="csv-dot"></span><span class="csv-dot"></span>
+        <span class="csv-name">data.csv</span>
       </div>
-    </div>
-
-    <div class="stage-grid reveal">
-      <div class="stage-card">
-        <div class="stage-num">STAGE 01</div>
-        <h3>Model</h3>
-        <p>A base layer of <strong>learnable PWMs</strong> for primary motif detection,
-        hierarchical convolutional layers, and an <strong>EfficientNet-style backbone</strong>
-        of MBConv blocks with squeeze-and-excitation, ending in a linear output head.
-        Architecture hyperparameters are tuned automatically when no <code>seed</code> is given.</p>
+      <div class="csv-body">
+        <div class="csv-line"><span class="c-seq">CCGTAATGCCTTTCCCTAACAGAGTTTTTC</span><span class="c-comma">,</span><span class="c-exp">8.42</span></div>
+        <div class="csv-line"><span class="c-seq">GAACTCGTGTTGTCGAGCGACGGAATTAGA</span><span class="c-comma">,</span><span class="c-exp">1.07</span></div>
+        <div class="csv-line"><span class="c-seq">TCAGTTAAATGGCAGAAAACTGGCAGGGCT</span><span class="c-comma">,</span><span class="c-exp">9.15</span></div>
+        <div class="csv-line"><span class="c-seq">TTTAGTCGTGGGATGATCAGTGGGTAAAGG</span><span class="c-comma">,</span><span class="c-exp">0.63</span></div>
+        <div class="csv-line"><span class="c-seq">TGGCGCGGGGTAACGCGCGCTAAGGCTCAG</span><span class="c-comma">,</span><span class="c-exp">5.80</span></div>
+        <div class="csv-line"><span class="c-seq">CTGCAACGCGGAGCTGGTGTGTTATCCATT</span><span class="c-comma">,</span><span class="c-exp">2.31</span></div>
       </div>
-      <div class="stage-card">
-        <div class="stage-num">STAGE 02</div>
-        <h3>Motif attribution</h3>
-        <p>The contribution of each detected motif and of multi-motif
-        <em>combinations</em> is quantified with <strong>Banzhaf indices</strong> via
-        <code>BanzhafInference</code>. Significance is assessed against random-coalition
-        backgrounds, yielding filtered singletons and higher-order motif combinations.</p>
-      </div>
-      <div class="stage-card">
-        <div class="stage-num">STAGE 03</div>
-        <h3>Rendering</h3>
-        <p>Results are written as <strong>HTML motif reports</strong> — sequence logos,
-        contribution tables, and combination summaries — via <code>GlyphEctoplasm</code>,
-        under <code>save_root/&lt;dataset&gt;/</code>.</p>
-      </div>
-    </div>
+      <figcaption class="csv-cap">
+        <span class="cap-item"><span class="sw sw-seq"></span>column 1 — DNA / RNA sequence</span>
+        <span class="cap-item"><span class="sw sw-exp"></span>column 2 — expression value</span>
+      </figcaption>
+    </figure>
   </div>
 </section>
 
