@@ -18,7 +18,6 @@
   <div class="nav-links">
     <a href="#abstract">Overview</a>
     <a href="#method">Input</a>
-    <a href="#features">Features</a>
     <a href="#usage">Usage</a>
     <a href="#citation">Cite</a>
   </div>
@@ -119,50 +118,11 @@
 
 <div class="divider"></div>
 
-<!-- ── Features ──────────────────────────────────────────────── -->
-<section id="features">
-  <div class="container-wide">
-    <div class="container reveal">
-      <div class="sec-label">02 &mdash; Features</div>
-      <h2>Flexible inputs, automatic tuning</h2>
-    </div>
-    <div class="feat-grid reveal">
-      <div class="feat-card">
-        <div class="feat-num">01</div>
-        <h3>DNA · RNA</h3>
-        <p>Works across nucleotide alphabets. Set <code>seq_type</code> to
-        <code>:dna</code> or <code>:rna</code>.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-num">02</div>
-        <h3>No file required</h3>
-        <p>Feed a <code>.jld2</code> dataset, a small CSV of <code>sequence,label</code>, or
-        in-memory strings and labels. All paths construct the same dataset and run the
-        same pipeline.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-num">03</div>
-        <h3>Motif combinations</h3>
-        <p>Beyond single motifs, it scores combinations of sizes <code>[2,3,4,5]</code>
-        to surface higher-order motif combinations.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-num">04</div>
-        <h3>Automatic tuning</h3>
-        <p>Omit <code>seed</code> and architecture hyperparameters are sampled and tuned
-        for you; supply one for a fully reproducible run.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
 <!-- ── Usage ─────────────────────────────────────────────────── -->
 <section id="usage">
   <div class="container-wide">
     <div class="container reveal">
-      <div class="sec-label">03 &mdash; Usage</div>
+      <div class="sec-label">02 &mdash; Usage</div>
       <h2>One entry point: <code>run_method</code></h2>
       <p>It runs the full pipeline — load → optional tune → train → attribute → render.
       A CUDA-capable GPU is required for training.</p>
@@ -234,7 +194,7 @@ trc = <span class="fn">make_trc</span>(<span class="str">"/path/to/mydata.jld2"<
 <!-- ── Options ───────────────────────────────────────────────── -->
 <section id="options">
   <div class="container reveal">
-    <div class="sec-label">04 &mdash; Key options</div>
+    <div class="sec-label">03 &mdash; Key options</div>
     <h2>Passed through <code>make_trc</code> / <code>run_method</code></h2>
     <table class="opt-table">
       <thead><tr><th>Option</th><th>Default</th><th>Meaning</th></tr></thead>
@@ -257,7 +217,7 @@ trc = <span class="fn">make_trc</span>(<span class="str">"/path/to/mydata.jld2"<
 <!-- ── Citation ──────────────────────────────────────────────── -->
 <section id="citation">
   <div class="container reveal">
-    <div class="sec-label">05 &mdash; Citation</div>
+    <div class="sec-label">04 &mdash; Citation</div>
     <h2>Cite ATLAS</h2>
     <div class="cite-box" id="cite-text">@software{atlas,
   title  = {ATLAS: Discovering motif combinations
