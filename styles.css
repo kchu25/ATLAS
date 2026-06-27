@@ -320,7 +320,7 @@ p:last-child { margin-bottom: 0; }
   overflow-x: auto;
   margin: 0;
   white-space: pre;
-  color: var(--text);
+  color: #d8dee9;
 }
 .code-block .kw  { color: #c792ea; }
 .code-block .fn  { color: #82aaff; }
@@ -336,7 +336,7 @@ p:last-child { margin-bottom: 0; }
   border-bottom: none; border-radius: 7px 7px 0 0;
   color: var(--muted); cursor: pointer; transition: all 0.2s;
 }
-.tab-btn.active { background: #080a0f; color: var(--text); }
+.tab-btn.active { background: #080a0f; color: #d8dee9; }
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }
 
