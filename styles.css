@@ -13,6 +13,7 @@
   --max-w:     960px;
   --wide-w:    1280px;
   --nav-bg:    rgba(13,15,20,0.85);
+  --shadow:    0 1px 2px rgba(0,0,0,0.3), 0 10px 30px rgba(0,0,0,0.35);
 }
 body.light {
   --bg:        #f8f9fc;
@@ -26,6 +27,7 @@ body.light {
   --accent3:   #7c3aed;
   --danger:    #dc2626;
   --nav-bg:    rgba(248,249,252,0.90);
+  --shadow:    0 1px 2px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.07);
 }
 
 .theme-btn {
@@ -206,14 +208,8 @@ h3 { font-family: 'Fraunces', Georgia, serif; font-weight: 500; font-size: 1.3re
 p { color: var(--muted); margin-bottom: 16px; }
 p:last-child { margin-bottom: 0; }
 
-.divider {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--border), transparent);
-  margin: 0 24px;
-}
-
 /* ── Abstract ─────────────────────────────────────────────── */
-#abstract { background: var(--bg); }
+#abstract { background: var(--bg2); }
 .overview-title {
   font-size: clamp(1.8rem, 3.6vw, 2.6rem);
 }
@@ -260,11 +256,16 @@ p:last-child { margin-bottom: 0; }
 .overview-text .hl { color: var(--accent); }
 
 /* ── Input (CSV figure) ────────────────────────────────────── */
-#method { background: var(--bg2); }
+#method { background: var(--bg); }
 .hl-seq { color: var(--text); font-weight: 500; }
 .hl-exp { color: var(--accent2); font-weight: 500; }
 
 .csv-fig { width: fit-content; max-width: 100%; margin: 44px auto 0; }
+.csv-window {
+  width: fit-content; max-width: 100%;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
 .csv-bar {
   display: flex; align-items: center; gap: 7px;
   padding: 11px 16px;
@@ -280,7 +281,7 @@ p:last-child { margin-bottom: 0; }
 .csv-body {
   border: 1px solid var(--border);
   border-radius: 0 0 12px 12px;
-  background: var(--bg);
+  background: var(--bg2);
   padding: 20px 22px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 13.5px; line-height: 2.05;
@@ -301,11 +302,34 @@ p:last-child { margin-bottom: 0; }
 
 /* ── Code block ────────────────────────────────────────────── */
 #usage { background: var(--bg2); }
-.code-block {
+.code-card {
   background: #080a0f;
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 24px 28px;
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.tabs {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.tab-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; padding: 7px 15px;
+  background: transparent; border: none;
+  border-radius: 7px;
+  color: #6b7280; cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+}
+.tab-btn:hover { color: #d8dee9; background: rgba(255,255,255,0.04); }
+.tab-btn.active { color: #d8dee9; background: rgba(255,255,255,0.07); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+.code-block {
+  background: transparent;
+  border: none; border-radius: 0;
+  padding: 22px 26px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 13px; line-height: 1.7;
   overflow-x: auto;
@@ -319,17 +343,6 @@ p:last-child { margin-bottom: 0; }
 .code-block .cm  { color: #546e7a; font-style: italic; }
 .code-block .num { color: #f78c6c; }
 .code-block .var { color: var(--accent); }
-.tabs { display: flex; gap: 4px; margin-bottom: -1px; flex-wrap: wrap; }
-.tab-btn {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 12px; padding: 6px 14px;
-  background: var(--bg3); border: 1px solid var(--border);
-  border-bottom: none; border-radius: 7px 7px 0 0;
-  color: var(--muted); cursor: pointer; transition: all 0.2s;
-}
-.tab-btn.active { background: #080a0f; color: #d8dee9; }
-.tab-panel { display: none; }
-.tab-panel.active { display: block; }
 
 /* ── Options table ─────────────────────────────────────────── */
 #options { background: var(--bg); }
@@ -352,11 +365,12 @@ p:last-child { margin-bottom: 0; }
 .opt-note { margin-top: 18px; font-size: 13.5px; }
 
 /* ── Citation ──────────────────────────────────────────────── */
-#citation { background: var(--bg2); }
+#citation { background: var(--bg); }
 .cite-box {
   background: #080a0f;
   border: 1px solid var(--border);
   border-radius: 12px;
+  box-shadow: var(--shadow);
   padding: 24px 28px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 12.5px; line-height: 1.7;
