@@ -288,6 +288,11 @@ p:last-child { margin-bottom: 0; }
   overflow-x: auto;
 }
 .csv-line { white-space: nowrap; }
+.csv-more {
+  text-align: center;
+  color: var(--muted); opacity: 0.5;
+  line-height: 1; padding-top: 6px;
+}
 .c-seq { color: var(--muted); letter-spacing: 0.04em; }
 .c-comma { color: var(--accent); font-weight: 700; padding: 0 3px; }
 .c-exp { color: var(--accent2); font-weight: 600; }
