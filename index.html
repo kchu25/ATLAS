@@ -43,8 +43,8 @@
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3l14 9-14 9V3z"/></svg>
       Get Started
     </a>
-    <a class="btn btn-outline" href="#method">How it works</a>
-    <a class="btn btn-outline" href="https://github.com/" target="_blank">
+    <!-- <a class="btn btn-outline" href="#method">How it works</a> -->
+    <a class="btn btn-outline" href="https://github.com/kchu25/MotifInference.jl" target="_blank">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.419 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
       GitHub
     </a>
@@ -126,92 +126,58 @@
   <div class="container-wide">
     <div class="container reveal">
       <div class="sec-label">02 &mdash; Usage</div>
-      <h2>One entry point: <code>run_method</code></h2>
-      <p>It runs the full pipeline — load → optional tune → train → attribute → render.
-      A CUDA-capable GPU is required for training.</p>
+      <h2>Apply it to a sequence-to-expression dataset</h2>
+      <p>One function does everything: it trains a model on your data and writes the
+      motif reports. You need a CUDA-capable GPU to train.</p>
     </div>
 
     <div class="reveal" style="margin-top:40px;">
       <div class="tabs">
         <button class="tab-btn active" onclick="switchTab(event,'install')">Install</button>
-        <button class="tab-btn" onclick="switchTab(event,'file')">From a file</button>
-        <button class="tab-btn" onclick="switchTab(event,'mem')">In-memory / CSV</button>
-        <button class="tab-btn" onclick="switchTab(event,'batch')">Config &amp; batch</button>
+        <button class="tab-btn" onclick="switchTab(event,'run')">Run</button>
+        <button class="tab-btn" onclick="switchTab(event,'results')">Where results go</button>
+        <button class="tab-btn" onclick="switchTab(event,'options')">Options</button>
       </div>
 
       <div id="tab-install" class="tab-panel active">
 <pre class="code-block"><span class="kw">using</span> Pkg
-Pkg.<span class="fn">activate</span>(<span class="str">"."</span>)
-Pkg.<span class="fn">instantiate</span>()
+Pkg.<span class="fn">add</span>(<span class="str">"MotifInference"</span>)
 
-<span class="cm"># Depends on unregistered packages referenced by local path in Project.toml:</span>
-<span class="cm">#   BanzhafInference, GlyphEctoplasm,</span>
-<span class="cm">#   AutoComputationalGraphTuning, SEQ2EXPdata</span>
-<span class="cm"># These must exist at the expected paths before instantiating.</span></pre>
+<span class="cm"># A CUDA-capable GPU is required for training.</span></pre>
       </div>
 
-      <div id="tab-file" class="tab-panel">
-<pre class="code-block"><span class="kw">using</span> ATLAS
+      <div id="tab-run" class="tab-panel">
+<pre class="code-block"><span class="cm"># data.csv — two columns (sequence, expression), one row per sequence</span>
+sequence,expression
+GATCACAGGTCTATCACCCTATTAACCACTCACGGGAGCTCTCCATGCATT,<span class="num">1.5</span>
+TTGACAGCTAGCTCAGTCCTAGGTATTATGCTAGCTACTAGAGAAAGAGGA,<span class="num">2.0</span>
+CGTACGATCGATCGTAGCTAGCTAGCATCGATCGATCGTACGTAGCATCGA,<span class="num">-0.5</span>
 
-<span class="cm"># Simplest — point at a .jld2 dataset. With no seed, hyperparameters are tuned.</span>
-<span class="fn">run_method</span>(<span class="str">"/path/to/mydata.jld2"</span>)
+<span class="kw">using</span> MotifInference
 
-<span class="cm"># With overrides</span>
-<span class="fn">run_method</span>(<span class="str">"/path/to/mydata.jld2"</span>; seq_type=<span class="str">:rna</span>, seed=<span class="num">42</span>)
-
-<span class="cm"># Multi-output data — process only a subset of targets</span>
-<span class="fn">run_method</span>(<span class="str">"/path/to/mydata.jld2"</span>; seq_type=<span class="str">:rna</span>, seed=<span class="num">42</span>, output_indices=<span class="num">1</span>:<span class="num">5</span>)</pre>
+<span class="cm"># That's the whole pipeline: load, tune, train, attribute, render.</span>
+<span class="fn">run_method</span>(<span class="str">"/path/to/mydata.csv"</span>)</pre>
       </div>
 
-      <div id="tab-mem" class="tab-panel">
-<pre class="code-block"><span class="kw">using</span> ATLAS
+      <div id="tab-results" class="tab-panel">
+<pre class="code-block"><span class="cm"># Results (trained model, motif caches, HTML reports) are written to a folder</span>
+<span class="cm"># named after the CSV, under save_root (the current directory by default):</span>
+<span class="cm">#   run_method("data/mydata.csv")  ->  ./mydata/</span>
 
-strings = [<span class="str">"ACGTACGT"</span>, <span class="str">"TTGGCCAA"</span>, <span class="str">"GGGGCCCC"</span>, <span class="str">"AAAATTTT"</span>]
-labels  = [<span class="num">1.0</span>, <span class="num">2.0</span>, <span class="num">3.0</span>, <span class="num">4.0</span>]   <span class="cm"># one scalar per sequence</span>
+<span class="cm"># choose the parent directory</span>
+<span class="fn">run_method</span>(<span class="str">"data/mydata.csv"</span>; save_root=<span class="str">"/path/to/results"</span>)   <span class="cm"># -> /path/to/results/mydata/</span>
 
-<span class="cm"># nucleotides</span>
-<span class="fn">run_method</span>(strings, labels)
-<span class="fn">run_method</span>(strings, labels; seq_type=<span class="str">:rna</span>, seed=<span class="num">42</span>)
+<span class="cm"># choose the folder name explicitly</span>
+<span class="fn">run_method</span>(<span class="str">"data/mydata.csv"</span>; save_folder_name=<span class="str">"run01"</span>)        <span class="cm"># -> ./run01/</span></pre>
+      </div>
 
-<span class="cm"># Or a CSV of  sequence,label  (header auto-detected, blank lines ignored)</span>
+      <div id="tab-options" class="tab-panel">
+<pre class="code-block"><span class="kw">using</span> MotifInference
+
+<span class="cm"># RNA sequences, fixed seed (skips hyperparameter tuning)</span>
 <span class="fn">run_method</span>(<span class="str">"/path/to/mydata.csv"</span>; seq_type=<span class="str">:rna</span>, seed=<span class="num">42</span>)</pre>
       </div>
-
-      <div id="tab-batch" class="tab-panel">
-<pre class="code-block"><span class="kw">using</span> ATLAS
-
-<span class="cm"># Build a run configuration explicitly to inspect or reuse it</span>
-trc = <span class="fn">make_trc</span>(<span class="str">"/path/to/mydata.jld2"</span>; seq_type=<span class="str">:dna</span>, seed=<span class="num">42</span>, motif_sizes=[<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>])
-<span class="fn">run_method</span>(trc)
-
-<span class="cm"># Batch over several registered datasets</span>
-<span class="fn">run_all</span>(<span class="fn">load_datasets</span>(<span class="str">"ecoli"</span>, <span class="str">"yeast"</span>))
-<span class="fn">run_all</span>(<span class="fn">load_datasets</span>())   <span class="cm"># everything</span></pre>
-      </div>
     </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- ── Options ───────────────────────────────────────────────── -->
-<section id="options">
-  <div class="container reveal">
-    <div class="sec-label">03 &mdash; Key options</div>
-    <h2>Passed through <code>make_trc</code> / <code>run_method</code></h2>
-    <table class="opt-table">
-      <thead><tr><th>Option</th><th>Default</th><th>Meaning</th></tr></thead>
-      <tbody>
-        <tr><td><code>seq_type</code></td><td><code>:dna</code></td><td><code>:dna</code> or <code>:rna</code></td></tr>
-        <tr><td><code>seed</code></td><td><code>nothing</code></td><td>RNG seed; <code>nothing</code> triggers hyperparameter tuning</td></tr>
-        <tr><td><code>motif_sizes</code></td><td><code>[2,3,4,5]</code></td><td>combination sizes scored for multi-motif combinations</td></tr>
-        <tr><td><code>normalization_method</code></td><td><code>:zscore</code></td><td>label normalization (<code>:identity</code>, <code>:zscore</code>, <code>:log</code>, …)</td></tr>
-        <tr><td><code>activation_thresh</code></td><td><code>0.9</code></td><td>percentile threshold for calling a motif "active"</td></tr>
-        <tr><td><code>multioutput</code></td><td><code>false</code></td><td>multi-output model variant</td></tr>
-        <tr><td><code>output_indices</code></td><td>all</td><td>which output targets to process</td></tr>
-        <tr><td><code>save_root</code></td><td><code>"."</code></td><td>where the per-dataset results folder is created</td></tr>
-      </tbody>
-    </table>
   </div>
 </section>
 
@@ -220,14 +186,14 @@ trc = <span class="fn">make_trc</span>(<span class="str">"/path/to/mydata.jld2"<
 <!-- ── Citation ──────────────────────────────────────────────── -->
 <section id="citation">
   <div class="container reveal">
-    <div class="sec-label">04 &mdash; Citation</div>
+    <div class="sec-label">03 &mdash; Citation</div>
     <h2>Cite ATLAS</h2>
     <div class="cite-box" id="cite-text">@software{atlas,
   title  = {ATLAS: Discovering motif combinations
             from sequence-to-measurement data},
   author = {Shane Chu, Chaolin Zhang},
   year   = {2026},
-  url    = {https://github.com/}
+  url    = {https://github.com/kchu25/MotifInference.jl}
 }<button class="copy-btn" onclick="copyCite()">Copy</button></div>
   </div>
 </section>

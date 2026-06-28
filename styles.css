@@ -339,6 +339,7 @@ p:last-child { margin-bottom: 0; }
 .opt-table td:first-child code { color: var(--accent2); background: transparent; padding: 0; }
 .opt-table td { color: var(--muted); }
 .opt-table tr:hover td { background: var(--bg2); }
+.opt-note { margin-top: 18px; font-size: 13.5px; }
 
 /* ── Citation ──────────────────────────────────────────────── */
 #citation { background: var(--bg2); }
