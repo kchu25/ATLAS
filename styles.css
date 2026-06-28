@@ -248,6 +248,11 @@ p:last-child { margin-bottom: 0; }
   white-space: nowrap;
 }
 .data-row code b { color: var(--text); font-weight: 500; }
+.data-more {
+  text-align: center;
+  color: var(--muted); opacity: 0.5;
+  line-height: 1; padding: 6px 0;
+}
 .data-row .val { color: var(--muted); }
 .data-row .val.hi { color: var(--accent2); font-weight: 500; }
 
