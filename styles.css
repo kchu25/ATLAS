@@ -42,7 +42,11 @@ body.light {
 .theme-btn:hover { border-color: var(--accent); }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  scroll-snap-type: y proximity;
+  scroll-padding-top: 56px;
+}
 body {
   background: var(--bg);
   color: var(--text);
@@ -175,7 +179,13 @@ h1 em {
 .btn-outline:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
 
 /* ── Sections ──────────────────────────────────────────────── */
-section { padding: 100px 24px; }
+section {
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 96px 24px;
+  scroll-snap-align: start;
+}
+#hero { scroll-snap-align: start; }
 .container { max-width: var(--max-w); margin: 0 auto; }
 .container-wide { max-width: var(--wide-w); margin: 0 auto; }
 
