@@ -14,8 +14,8 @@
 <div id="progress"></div>
 
 <nav>
-  <a href="#hero" class="nav-logo">ATL<span style="color:var(--accent2)">AS</span></a>
   <div class="nav-links">
+    <a href="#hero" class="nav-logo">ATL<span style="color:var(--accent2)">AS</span></a>
     <a href="#abstract">Overview</a>
     <a href="#method">Input</a>
     <a href="#usage">Usage</a>
@@ -75,10 +75,9 @@
         <div class="data-row"><code>TGAATTTGAAGCAGTGGCCGGG<b class="m5">CCAATCAG</b>AGTGTGTGCTCAGGAGTTCGT<b class="m3">TGACGTCA</b>CCCATGACACGATAGAGAGAG</code><span class="val">1.8</span></div>
       </div>
       <div class="overview-text">
-        <p>You bring <strong>(sequence, value)</strong> pairs — DNA or RNA with a
-        measured signal.</p>
-        <p>ATLAS finds which motifs must <span class="hl">co-occur</span> to drive the
-        signal — the <strong>combinations</strong> of patterns that matter together,
+        <p>You bring <strong>(sequence, value)</strong> pairs — DNA or RNA each paired with a measurement.</p>
+        <p>ATLAS finds which motifs must <strong>co-occur</strong> to drive the
+        signal, i.e. the <strong>combinations</strong> of patterns that matter together,
         not in isolation.</p>
       </div>
     </div>
@@ -101,12 +100,16 @@
         <span class="csv-name">data.csv</span>
       </div>
       <div class="csv-body">
-        <div class="csv-line"><span class="c-seq">CCGTAATGCCTTTCCCTAACAGAGTTTTTC</span><span class="c-comma">,</span><span class="c-exp">8.42</span></div>
-        <div class="csv-line"><span class="c-seq">GAACTCGTGTTGTCGAGCGACGGAATTAGA</span><span class="c-comma">,</span><span class="c-exp">1.07</span></div>
-        <div class="csv-line"><span class="c-seq">TCAGTTAAATGGCAGAAAACTGGCAGGGCT</span><span class="c-comma">,</span><span class="c-exp">9.15</span></div>
-        <div class="csv-line"><span class="c-seq">TTTAGTCGTGGGATGATCAGTGGGTAAAGG</span><span class="c-comma">,</span><span class="c-exp">0.63</span></div>
-        <div class="csv-line"><span class="c-seq">TGGCGCGGGGTAACGCGCGCTAAGGCTCAG</span><span class="c-comma">,</span><span class="c-exp">5.80</span></div>
-        <div class="csv-line"><span class="c-seq">CTGCAACGCGGAGCTGGTGTGTTATCCATT</span><span class="c-comma">,</span><span class="c-exp">2.31</span></div>
+        <div class="csv-line"><span class="c-seq">CCGTAATGCCTTTCCCTAACAGAGTTTTTCACGGTATCGGACTTAGCCATGGCAATTGCAGTCCGATTA</span><span class="c-comma">,</span><span class="c-exp">8.42</span></div>
+        <div class="csv-line"><span class="c-seq">GAACTCGTGTTGTCGAGCGACGGAATTAGACCTGGATCAAGGCTACGTTTACCGGATGCAATCCGATAG</span><span class="c-comma">,</span><span class="c-exp">1.07</span></div>
+        <div class="csv-line"><span class="c-seq">TCAGTTAAATGGCAGAAAACTGGCAGGGCTTACCGATTGGCATGCCAATTGCGATCCGTAAGGCTACAT</span><span class="c-comma">,</span><span class="c-exp">9.15</span></div>
+        <div class="csv-line"><span class="c-seq">TTTAGTCGTGGGATGATCAGTGGGTAAAGGCTATCGGCCATTAGCCGATGCATTGGACGTCCATTGACC</span><span class="c-comma">,</span><span class="c-exp">0.63</span></div>
+        <div class="csv-line"><span class="c-seq">TGGCGCGGGGTAACGCGCGCTAAGGCTCAGTTCCGAATGGCATTGACGTCAAGGCTATCGGCCATTGAC</span><span class="c-comma">,</span><span class="c-exp">5.80</span></div>
+        <div class="csv-line"><span class="c-seq">CTGCAACGCGGAGCTGGTGTGTTATCCATTGACCGTAATCGGCATTAGCCGATGCATTGGACGTCCAAT</span><span class="c-comma">,</span><span class="c-exp">2.31</span></div>
+        <div class="csv-line"><span class="c-seq">ATGCCGTATTACGGCAATCGGATCCGTAAGGCTACATTGCCGATTGGCATGCCAATTGCGATCCGTAAG</span><span class="c-comma">,</span><span class="c-exp">7.94</span></div>
+        <div class="csv-line"><span class="c-seq">GCTAAGGCTCAGTTCCGAATGGCATTGACGTCAAGGCTATCGGCCATTAGCCGATGCATTGGACGTCAA</span><span class="c-comma">,</span><span class="c-exp">3.56</span></div>
+        <div class="csv-line"><span class="c-seq">AACGTGGCATGCCAATTGCGATCCGTAAGGCTACATTGCCGATTGGCATGCCAATTGCGATCCGTAAGG</span><span class="c-comma">,</span><span class="c-exp">6.28</span></div>
+        <div class="csv-line"><span class="c-seq">TTGACCGTAATCGGCATTAGCCGATGCATTGGACGTCCAATGGCGCGGGGTAACGCGCGCTAAGGCTCA</span><span class="c-comma">,</span><span class="c-exp">0.91</span></div>
       </div>
       <figcaption class="csv-cap">
         <span class="cap-item"><span class="sw sw-seq"></span>column 1 — DNA / RNA sequence</span>

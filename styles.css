@@ -10,8 +10,8 @@
   --accent2:   #34d399;
   --accent3:   #a78bfa;
   --danger:    #f87171;
-  --max-w:     780px;
-  --wide-w:    1080px;
+  --max-w:     960px;
+  --wide-w:    1280px;
   --nav-bg:    rgba(13,15,20,0.85);
 }
 body.light {
@@ -72,7 +72,7 @@ code {
 /* ── Nav ───────────────────────────────────────────────────── */
 nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 90;
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex; align-items: center; justify-content: flex-end;
   padding: 14px 32px;
   background: var(--nav-bg);
   backdrop-filter: blur(12px);
@@ -84,7 +84,11 @@ nav {
   color: var(--accent); font-weight: 500;
   text-decoration: none;
 }
-.nav-links { display: flex; gap: 28px; }
+.nav-links {
+  display: flex; align-items: center; gap: 28px;
+  position: absolute; left: 50%; transform: translateX(-50%);
+}
+.nav-links .nav-logo { margin-right: 8px; font-size: 15px; }
 .nav-links a {
   font-size: 13px; color: var(--muted); letter-spacing: 0.04em;
   transition: color 0.2s;
@@ -250,7 +254,7 @@ p:last-child { margin-bottom: 0; }
 .hl-seq { color: var(--text); font-weight: 500; }
 .hl-exp { color: var(--accent2); font-weight: 500; }
 
-.csv-fig { max-width: 600px; margin: 44px auto 0; }
+.csv-fig { width: fit-content; max-width: 100%; margin: 44px auto 0; }
 .csv-bar {
   display: flex; align-items: center; gap: 7px;
   padding: 11px 16px;
@@ -379,5 +383,5 @@ footer {
 
 @media (max-width: 768px) {
   nav { padding: 12px 20px; }
-  .nav-links { display: none; }
+  .nav-links a:not(.nav-logo) { display: none; }
 }
