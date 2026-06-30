@@ -151,26 +151,26 @@ CGTACGATCGATCGTAGCTAGCTAGCATCGATCGATCGTACGTAGCATCGA,<span class="num">-0.5</span
 <span class="kw">using</span> MotifInference
 
 <span class="cm"># That's the whole pipeline: load, tune, train, attribute, render.</span>
-<span class="fn">run_method</span>(<span class="str">"/path/to/mydata.csv"</span>)</pre>
+MotifInference.<span class="fn">run_method</span>(<span class="str">"/path/to/mydata.csv"</span>)</pre>
       </div>
 
       <div id="tab-results" class="tab-panel">
 <pre class="code-block"><span class="cm"># Results (trained model, motif caches, HTML reports) are written to a folder</span>
 <span class="cm"># named after the CSV, under save_root (the current directory by default):</span>
-<span class="cm">#   run_method("data/mydata.csv")  ->  ./mydata/</span>
+<span class="cm">#   MotifInference.run_method("data/mydata.csv")  ->  ./mydata/</span>
 
 <span class="cm"># choose the parent directory</span>
-<span class="fn">run_method</span>(<span class="str">"data/mydata.csv"</span>; save_root=<span class="str">"/path/to/results"</span>)   <span class="cm"># -> /path/to/results/mydata/</span>
+MotifInference.<span class="fn">run_method</span>(<span class="str">"data/mydata.csv"</span>; save_root=<span class="str">"/path/to/results"</span>)   <span class="cm"># -> /path/to/results/mydata/</span>
 
 <span class="cm"># choose the folder name explicitly</span>
-<span class="fn">run_method</span>(<span class="str">"data/mydata.csv"</span>; save_folder_name=<span class="str">"run01"</span>)        <span class="cm"># -> ./run01/</span></pre>
+MotifInference.<span class="fn">run_method</span>(<span class="str">"data/mydata.csv"</span>; save_folder_name=<span class="str">"run01"</span>)        <span class="cm"># -> ./run01/</span></pre>
       </div>
 
       <div id="tab-options" class="tab-panel">
 <pre class="code-block"><span class="kw">using</span> MotifInference
 
 <span class="cm"># RNA sequences, fixed seed (skips hyperparameter tuning)</span>
-<span class="fn">run_method</span>(<span class="str">"/path/to/mydata.csv"</span>; seq_type=<span class="str">:rna</span>, seed=<span class="num">42</span>)</pre>
+MotifInference.<span class="fn">run_method</span>(<span class="str">"/path/to/mydata.csv"</span>; seq_type=<span class="str">:rna</span>, seed=<span class="num">42</span>)</pre>
       </div>
     </div>
   </div>
