@@ -178,15 +178,31 @@ MotifInference.<span class="fn">run_method</span>(<span class="str">"20160503_av
       </div>
 
       <div id="tab-results" class="tab-panel">
-<pre class="code-block"><span class="cm"># Results (trained model, motif caches, HTML reports) are written to a folder</span>
-<span class="cm"># named after the CSV, under save_root (the current directory by default):</span>
-<span class="cm">#   MotifInference.run_method("data/mydata.csv")  ->  ./mydata/</span>
+<pre class="code-block"><span class="cm"># Results (trained model, motif caches, HTML reports) go in ONE output folder.</span>
+<span class="cm"># Its path is built from two parts:</span>
+<span class="cm">#</span>
+<span class="cm">#     output folder  =  save_root / save_folder_name</span>
+<span class="cm">#                       \_______/   \______________/</span>
+<span class="cm">#                       WHERE         WHAT it's called</span>
+<span class="cm">#                       (parent dir)  (the folder name)</span>
+<span class="cm">#</span>
+<span class="cm"># Defaults:  save_root        = "."  (current directory)</span>
+<span class="cm">#            save_folder_name = the CSV's file name, without ".csv"</span>
 
-<span class="cm"># choose the parent directory</span>
-MotifInference.<span class="fn">run_method</span>(<span class="str">"data/mydata.csv"</span>; save_root=<span class="str">"/path/to/results"</span>)   <span class="cm"># -> /path/to/results/mydata/</span>
+<span class="cm"># Default: both taken from above -> ./mydata/</span>
+MotifInference.<span class="fn">run_method</span>(<span class="str">"data/mydata.csv"</span>)
 
-<span class="cm"># choose the folder name explicitly</span>
-MotifInference.<span class="fn">run_method</span>(<span class="str">"data/mydata.csv"</span>; save_folder_name=<span class="str">"run01"</span>)        <span class="cm"># -> ./run01/</span></pre>
+<span class="cm"># save_root = WHERE the folder is created (the parent directory)</span>
+MotifInference.<span class="fn">run_method</span>(<span class="str">"data/mydata.csv"</span>; save_root=<span class="str">"/path/to/results"</span>)
+<span class="cm">#   -> /path/to/results/mydata/   (name still defaults to the CSV)</span>
+
+<span class="cm"># save_folder_name = WHAT the folder is called (overrides the CSV name)</span>
+MotifInference.<span class="fn">run_method</span>(<span class="str">"data/mydata.csv"</span>; save_folder_name=<span class="str">"run01"</span>)
+<span class="cm">#   -> ./run01/   (root still defaults to ".")</span>
+
+<span class="cm"># Combine both to control the full path</span>
+MotifInference.<span class="fn">run_method</span>(<span class="str">"data/mydata.csv"</span>; save_root=<span class="str">"/path/to/results"</span>, save_folder_name=<span class="str">"run01"</span>)
+<span class="cm">#   -> /path/to/results/run01/</span></pre>
       </div>
 
       <div id="tab-options" class="tab-panel">
