@@ -157,18 +157,18 @@ MotifInference.<span class="fn">run_method</span>(<span class="str">"/path/to/my
 
       <div id="tab-example" class="tab-panel">
 <pre class="code-block"><span class="cm"># A real, end-to-end example on yeast promoter data.</span>
-<span class="cm"># From de Boer et al. (2020), ~9,982 promoter sequences each paired</span>
+<span class="cm"># From de Boer et al. (2020), ~8,000 promoter sequences each paired</span>
 <span class="cm"># with a measured expression level — exactly the (sequence, value) format ATLAS expects.</span>
 
 <span class="cm"># 1. Download the dataset (CSV: column 1 = sequence, column 2 = expression)</span>
-wget https://raw.githubusercontent.com/kchu25/ATLAS/main/data/20160503_average_promoter_ELs_per_seq_atLeast100Counts.csv
+wget https://raw.githubusercontent.com/kchu25/ATLAS/main/data/yeast.csv
 
 <span class="cm"># 2. Run the full pipeline on it</span>
 <span class="kw">using</span> MotifInference
 
-MotifInference.<span class="fn">run_method</span>(<span class="str">"20160503_average_promoter_ELs_per_seq_atLeast100Counts.csv"</span>)
+MotifInference.<span class="fn">run_method</span>(<span class="str">"yeast.csv"</span>)
 
-<span class="cm"># Results are written to ./20160503_average_promoter_ELs_per_seq_atLeast100Counts/</span>
+<span class="cm"># Results are written to ./yeast/</span>
 <span class="cm"># (a CUDA-capable GPU is required for training).</span></pre>
         <p class="example-cite">Data: high-quality pTpA + glucose subset (~10,000 promoters) from
         de Boer, Vaishnav, Sadeh, Abeyta, Friedman &amp; Regev,
